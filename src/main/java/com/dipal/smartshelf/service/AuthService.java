@@ -24,11 +24,17 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public String register(AuthRequest request) {
-        Role memberRole = roleRepository.findByName("MEMBER");
+        Role role;
+
+        if (request.getRole() != null && request.getRole().equalsIgnoreCase("ADMIN")) {
+            role = roleRepository.findByName("ADMIN");
+        } else {
+            role = roleRepository.findByName("MEMBER");
+        }
         var user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(memberRole)
+                .role(role)
                 .build();
         userRepository.save(user);
         return "User Registered Successfully";

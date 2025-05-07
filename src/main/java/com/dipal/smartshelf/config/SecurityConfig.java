@@ -1,4 +1,4 @@
-// File: src/main/java/com/dipal/smartshelf/config/SecurityConfig.java
+
 package com.dipal.smartshelf.config;
 
 import lombok.RequiredArgsConstructor;

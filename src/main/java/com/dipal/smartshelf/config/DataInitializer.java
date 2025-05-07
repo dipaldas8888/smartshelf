@@ -1,4 +1,4 @@
-// File: src/main/java/com/dipal/smartshelf/config/DataInitializer.java
+
 package com.dipal.smartshelf.config;
 
 import com.dipal.smartshelf.entity.Role;
