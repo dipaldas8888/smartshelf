@@ -3,6 +3,7 @@ package com.dipal.smartshelf.service;
 import com.dipal.smartshelf.dto.BookDTO;
 import com.dipal.smartshelf.entity.Book;
 import com.dipal.smartshelf.repository.BookRepository;
+import com.dipal.smartshelf.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BookService {
-
+    private  final TransactionRepository transactionRepository;
     private final BookRepository bookRepository;
 
     public List<BookDTO> getAllBooks() {
@@ -41,8 +42,16 @@ public class BookService {
     }
 
     public void deleteBook(Integer id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+
+        if (transactionRepository.existsByBook(book)) {
+            throw new RuntimeException("Cannot delete book because it has associated transactions");
+        }
+
         bookRepository.deleteById(id);
     }
+
 
     public List<BookDTO> searchBooks(String query) {
         return bookRepository.searchBooks(query.toLowerCase()).stream().map(this::convertToDTO).collect(Collectors.toList());

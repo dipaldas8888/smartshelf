@@ -1,5 +1,6 @@
 package com.dipal.smartshelf.controller;
 
+import com.dipal.smartshelf.dto.ErrorResponse;
 import com.dipal.smartshelf.dto.MemberDTO;
 import com.dipal.smartshelf.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,14 @@ public class MemberController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Integer id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteMember(@PathVariable Integer id) {
+        try {
+            memberService.deleteMember(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
     }
 }

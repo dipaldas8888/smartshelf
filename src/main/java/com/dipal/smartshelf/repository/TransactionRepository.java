@@ -1,5 +1,7 @@
 package com.dipal.smartshelf.repository;
 
+import com.dipal.smartshelf.entity.Book;
+import com.dipal.smartshelf.entity.Member;
 import com.dipal.smartshelf.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +17,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     List<Transaction> findByBook_Id(Integer bookId);
     List<Transaction> findByMember_Id(Integer memberId);
+    boolean existsByBook(Book book);
+    boolean existsByMember(Member member);
+
 }

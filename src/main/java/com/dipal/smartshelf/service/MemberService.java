@@ -3,6 +3,7 @@ package com.dipal.smartshelf.service;
 import com.dipal.smartshelf.dto.MemberDTO;
 import com.dipal.smartshelf.entity.Member;
 import com.dipal.smartshelf.repository.MemberRepository;
+import com.dipal.smartshelf.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final TransactionRepository transactionRepository;
 
     public List<MemberDTO> getAllMembers() {
         return memberRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -41,6 +43,11 @@ public class MemberService {
     }
 
     public void deleteMember(Integer id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+        if(transactionRepository.existsByMember(member)) {
+            throw new RuntimeException("Cannot delete member because they have associated transactions");
+        }
         memberRepository.deleteById(id);
     }
 
