@@ -89,4 +89,21 @@ public class TransactionService {
     public List<Transaction> getOverdueTransactions() {
         return transactionRepository.findOverdueTransactions();
     }
+    public void returnBook(Integer id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
+
+        if (transaction.getReturnDate() != null) {
+            throw new RuntimeException("Book has already been returned.");
+        }
+
+        transaction.setReturnDate(LocalDateTime.now());
+        // Update book available quantity
+        Book book = transaction.getBook();
+        book.setAvailableQuantity(book.getAvailableQuantity() + 1);
+
+        // Save both updates
+        bookRepository.save(book);
+        transactionRepository.save(transaction);
+    }
 }

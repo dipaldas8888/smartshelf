@@ -1,6 +1,7 @@
 package com.dipal.smartshelf.controller;
 
 import com.dipal.smartshelf.dto.BorrowRequest;
+import com.dipal.smartshelf.dto.ErrorResponse;
 import com.dipal.smartshelf.dto.ReturnRequest;
 import com.dipal.smartshelf.entity.Transaction;
 import com.dipal.smartshelf.service.TransactionService;
@@ -26,6 +27,17 @@ public class TransactionController {
     @PostMapping("/return")
     public ResponseEntity<Transaction> returnBook(@RequestBody ReturnRequest returnRequest) {
         return ResponseEntity.ok(transactionService.returnBook(returnRequest));
+    }
+    @PutMapping("/return/{id}")
+    public ResponseEntity<?> returnBook(@PathVariable Integer id) {
+        try {
+            transactionService.returnBook(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
     }
 
     @GetMapping
